@@ -11,12 +11,16 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.Collections;
 import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,14 +29,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @AutoConfigureMockMvc
 @SpringBootTest
-public class PersonControllerTest {
+ public class PersonControllerTest {
 
 @Autowired
     private MockMvc mockMvc;
     @Mock
     private PersonService personService;
-    @Mock
-    private PersonRepositary personRepositary;
+
 
     /**
      * The Object mapper.
@@ -41,7 +44,7 @@ public class PersonControllerTest {
     /**
      * The Person.
      */
-    Person person = new Person(1,"Akshit","Kumar","UP","male");
+    Person person = new Person(1,"Akshit","kumar","UP","male");
 
     /**
      * Should add the new person.
@@ -70,7 +73,7 @@ public class PersonControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/person/delete/1")
                         .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isOk());
 
         }
 
@@ -82,7 +85,7 @@ public class PersonControllerTest {
     @Test
     public void should_get_all_person() throws Exception {
         BDDMockito.given(personService.getAllPerson())
-                .willReturn((List<Person>) person);
+                .willReturn(Collections.singletonList(person));
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/person/getAll")).
                 andExpect(status().isOk());
