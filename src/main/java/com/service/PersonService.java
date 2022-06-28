@@ -17,9 +17,19 @@ public class PersonService {
     private PersonRepositary personRepositary;
 
     /**
+     * Instantiates a new Person service.
+     *
+     * @param personRepositary the person repositary
+     */
+    public PersonService(PersonRepositary personRepositary) {
+        this.personRepositary=personRepositary;
+    }
+
+    /**
      * Create.
      *
      * @param person the person
+     * @return the person
      */
     public Person create(Person person) {
         return personRepositary.save(person);
@@ -44,23 +54,13 @@ public class PersonService {
         return personRepositary.findById(id).orElseThrow(() -> new PersonNotFoundException("ID Not Found" + id));
     }
 
-    /**
-     * Update person person.
-     *
-     * @param person the person
-     * @param id     the id
-     * @return the person
-     */
-    public Person updatePerson(Person person, int id) {
-        return personRepositary.findById(Math.toIntExact(id)).map(person1 -> {
-            person1.setFirstName(person.getFirstName());
-            person1.setLastName(person.getLastName());
-            person1.setAddress(person.getAddress());
-            person1.setGender(person.getGender());
-            return (personRepositary.save(person1));
-        }).orElseThrow(() -> new PersonNotFoundException("ID Not Found" + " " + id));
-    }
 
+    /**
+     * Delete person http status.
+     *
+     * @param id the id
+     * @return the http status
+     */
     public HttpStatus deletePerson(int id) {
         try {
             personRepositary.deleteById(id);

@@ -60,17 +60,6 @@ public class PersonController {
         return ResponseEntity.ok(personService.getPersonByID(id));
     }
 
-    /**
-     * Update person person.
-     *
-     * @param person the person
-     * @param id     the id
-     * @return the person
-     */
-    @PutMapping("/update/{id}")
-    public Person updatePersonById(@RequestBody Person person, @PathVariable int id) {
-        return personService.updatePerson(person, id);
-    }
 
     /**
      * Delete product http status.
