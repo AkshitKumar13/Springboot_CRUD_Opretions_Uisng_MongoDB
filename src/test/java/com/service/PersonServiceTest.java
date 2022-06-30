@@ -47,7 +47,7 @@ public class PersonServiceTest {
         List<Person> personList = new ArrayList<>();
         personList.add(personDetail);
 
-        given(personRepositary.findAll()).willReturn(personList);
+        when(personRepositary.findAll()).thenReturn(personList);
         List<Person> result = personRepositary.findAll();
          assertEquals(result.size(), 1);
     }
@@ -61,7 +61,7 @@ public class PersonServiceTest {
     public void testGetEmployee() throws Exception {
         Person personDetail= getPerson();
 
-        given(personRepositary.findById(1)).willReturn(Optional.of(personDetail));
+        when(personRepositary.findById(1)).thenReturn(Optional.of(personDetail));
         Optional<Person> result = personRepositary.findById(1);
          assertEquals(result.get().getId(), 1);
     }

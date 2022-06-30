@@ -70,5 +70,14 @@ public class PersonService {
       return HttpStatus.MOVED_PERMANENTLY;
 
     }
+    public Person updatePerson(Person person, int id) {
+        return personRepositary.findById(Math.toIntExact(id)).map(person1 -> {
+            person1.setFirstName(person.getFirstName());
+            person1.setLastName(person.getLastName());
+            person1.setAddress(person.getAddress());
+            person1.setGender(person.getGender());
+            return (personRepositary.save(person1));
+        }).orElseThrow(() -> new PersonNotFoundException("ID Not Found" + " " + id));
+    }
 }
 
