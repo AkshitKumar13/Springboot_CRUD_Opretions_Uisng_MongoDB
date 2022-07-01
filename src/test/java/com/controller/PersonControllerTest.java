@@ -2,21 +2,27 @@ package com.controller;
 
 import com.entity.Person;
 import com.fasterxml.jackson.databind.ObjectMapper;
- import com.service.PersonService;
+import com.service.PersonService;
 import lombok.SneakyThrows;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
- import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
- import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import java.util.Collections;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
- import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -24,14 +30,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @AutoConfigureMockMvc
 @SpringBootTest
- public class PersonControllerTest {
+public class PersonControllerTest {
 
-@Autowired
+    @Autowired
     private MockMvc mockMvc;
     @Mock
     private PersonService personService;
 
-
+    @InjectMocks
+    private PersonController personController;
     /**
      * The Object mapper.
      */
@@ -39,17 +46,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     /**
      * The Person.
      */
-    Person person = new Person(1,"Akshit","kumar","UP","male");
+    Person person = new Person(1, "Akshit", "kumar", "UP", "male");
+
+    /**
+     * Sets up.
+     */
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        this.mockMvc = MockMvcBuilders.standaloneSetup(personController).build();
+    }
 
     /**
      * Should add the new person.
      */
     @SneakyThrows
     @Test
-    public void   should_add_the_new_person()  {
+    public void should_add_the_new_person() {
         when(personService.create(person))
                 .thenReturn(person);
-           mockMvc.perform(post("/person/create")
+        mockMvc.perform(post("/person/create")
                         .content(objectMapper.writeValueAsString(person))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -67,10 +83,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 .thenReturn(HttpStatus.MOVED_PERMANENTLY);
         mockMvc.perform(MockMvcRequestBuilders.delete("/person/delete/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
 
-        }
+    }
 
     /**
      * Should get all person.
@@ -79,7 +95,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
      */
     @Test
     public void should_get_all_person() throws Exception {
-       when(personService.getAllPerson())
+        when(personService.getAllPerson())
                 .thenReturn(Collections.singletonList(person));
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/person/getAll")).
@@ -107,7 +123,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
      */
     @Test
     public void should_update_the_employee_with_the_given_employee_id() throws Exception {
-        Person updatedPerson = new Person(1,"Rahul","kumar","UP","male");
+        Person updatedPerson = new Person(1, "Rahul", "kumar", "UP", "male");
 
         when(personService.updatePerson(person, person.getId()))
                 .thenReturn(person);
