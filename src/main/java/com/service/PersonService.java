@@ -78,6 +78,6 @@ public class PersonService {
             person1.setGender(person.getGender());
             return (personRepositary.save(person1));
         }).orElseThrow(() -> new PersonNotFoundException("ID Not Found" + " " + id));
-    }
+        }
 }
 
